@@ -1,0 +1,83 @@
+
+
+<h2>Home</h2>
+
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Jacket</th>
+            <th><input type="text" class="search-input" placeholder="Song Name"></th>
+            <th><input type="text" class="search-input" placeholder="Artist"></th>
+            <th><input type="text" class="search-input" placeholder="Single Difficulty"></th>
+            <th><input type="text" class="search-input" placeholder="Double Difficulty"></th>
+            <th>CO-OP</th>
+            <th>Version</th>
+        </tr>
+    </thead>
+    <tbody>
+        <% for(var i = 0 ; i < tabled['stepcharts'].length; i++) { %>
+        <tr>
+            <td><img src='<%- tabled['stepcharts'][i]['jacket']%>' alt="" width=150></td>
+            <td><%- tabled['stepcharts'][i]['song_name']%></td>
+            <td><%- tabled['stepcharts'][i]['song_artist']%></td>
+            <td>
+                <% if(tabled['stepcharts'][i]['single'][0] != undefined) { %>
+                    <% tabled['stepcharts'][i]['single'].sort(([a, b], [c, d]) => a - c || d - b) %>
+                    <% for(let k = 0; k < tabled['stepcharts'][i]['single'].length; k++){ %>
+                    <%- tabled['stepcharts'][i]['single'][k][0] %>
+                <% }} %>
+            </td>
+            <td>
+                <% if(tabled['stepcharts'][i]['double'][0] != undefined) { %>
+                    <% tabled['stepcharts'][i]['double'].sort(([a, b], [c, d]) => a - c || d - b) %>
+                    <% for(let k = 0; k < tabled['stepcharts'][i]['double'].length; k++){ %>
+                        <%- tabled['stepcharts'][i]['double'][k][0] %>
+                    <% }} %>
+            </td>
+            <td>
+                <% if(tabled['stepcharts'][i]['coop'][0] != undefined) { %>
+                    <%- tabled['stepcharts'][i]['coop'][0][0] %>
+                <% } %>
+            </td>
+            <td><%- tabled['stepcharts'][i]['version']%></td>
+        </tr>
+        <% } %>
+
+
+        <% //console.log(tabled['stepcharts'][0]['single']) %>
+        <% //console.log(tabled['stepcharts'][0]['single'].sort(([a, b], [c, d]) => c - a || b - d))%>
+    </tbody>
+</table>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  document.querySelectorAll(".search-input").forEach((inputField) => {
+    const tableRows = inputField
+      .closest("table")
+      .querySelectorAll("tbody > tr");
+    const headerCell = inputField.closest("th");
+    const otherHeaderCells = headerCell.closest("tr").children;
+    const columnIndex = Array.from(otherHeaderCells).indexOf(headerCell);
+    const searchableCells = Array.from(tableRows).map(
+      (row) => row.querySelectorAll("td")[columnIndex]
+    );
+
+    inputField.addEventListener("input", () => {
+      const searchQuery = inputField.value.toLowerCase();
+
+      for (const tableCell of searchableCells) {
+        const row = tableCell.closest("tr");
+        const value = tableCell.textContent.toLowerCase().replace(",", "");
+
+        row.style.visibility = null;
+
+        if (value.search(searchQuery) === -1) {
+          row.style.visibility = "collapse";
+        }
+      }
+    });
+  });
+});
+</script>
